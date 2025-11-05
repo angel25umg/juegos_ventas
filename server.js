@@ -1,5 +1,6 @@
 // index.js
 // Importamos el modulo express 
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -7,7 +8,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: ["http://localhost:5173", "http://localhost:8081"],
 };
 
 app.use(cors(corsOptions));
@@ -42,6 +43,14 @@ require("./app/routes/pagos.routes")(app);
 require("./app/routes/resenas.routes")(app);
 require("./app/routes/logros.routes")(app);
 require("./app/routes/clientelogros.routes")(app);
+
+require("./app/routes/detallepedido.routes")(app);
+
+require("./app/routes/factura.routes")(app);
+require("./app/routes/carrito.routes")(app);
+require("./app/routes/carrito-pedido.routes")(app);
+require("./app/routes/stripe.routes")(app);
+require("./app/routes/reporteria.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8081;

@@ -36,6 +36,9 @@ db.pagos = require("./pago.model.js")(sequelize, Sequelize);
 db.resenas = require("./resenas.model.js")(sequelize, Sequelize);
 db.logros = require("./logro.model.js")(sequelize, Sequelize);
 db.clienteLogros = require("./clientelogro.model.js")(sequelize, Sequelize);
+db.facturas = require("./factura.model.js")(sequelize, Sequelize);
+db.carritos = require("./carrito.model.js")(sequelize, Sequelize);
+db.carritoDetalles = require("./carritodetalle.model.js")(sequelize, Sequelize);
 
 // aquí puedes definir las relaciones
 // ejemplo:
@@ -53,5 +56,19 @@ db.pagos.belongsTo(db.pedidos, { foreignKey: "pedidoId" });
 
 db.clientes.belongsToMany(db.logros, { through: db.clienteLogros });
 db.logros.belongsToMany(db.clientes, { through: db.clienteLogros });
+
+// Relación factura con cliente y pedido
+db.clientes.hasMany(db.facturas, { foreignKey: "clienteId" });
+db.facturas.belongsTo(db.clientes, { foreignKey: "clienteId" });
+db.pedidos.hasOne(db.facturas, { foreignKey: "pedidoId" });
+db.facturas.belongsTo(db.pedidos, { foreignKey: "pedidoId" });
+
+// Relaciones de carrito
+db.clientes.hasOne(db.carritos, { foreignKey: "clienteId" });
+db.carritos.belongsTo(db.clientes, { foreignKey: "clienteId" });
+db.carritos.hasMany(db.carritoDetalles, { foreignKey: "carritoId" });
+db.carritoDetalles.belongsTo(db.carritos, { foreignKey: "carritoId" });
+db.videojuegos.hasMany(db.carritoDetalles, { foreignKey: "videojuegoId" });
+db.carritoDetalles.belongsTo(db.videojuegos, { foreignKey: "videojuegoId" });
 
 module.exports = db;
