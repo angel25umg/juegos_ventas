@@ -2,6 +2,7 @@ const db = require("../models");
 const Factura = db.facturas;
 const Pedido = db.pedidos;
 const Cliente = db.clientes;
+const DetallePedido = db.detallePedidos;
 
 // Crear factura automáticamente tras pago
 exports.createFromPago = async (req, res) => {
@@ -16,8 +17,13 @@ exports.createFromPago = async (req, res) => {
         const clienteId = pedido.clienteId;
         // Generar número de factura único
         const numero = `F-${Date.now()}-${pedidoId}`;
-        // Detalles: puedes obtener los productos del pedido
-        const detalles = pedido.detalles || [];
+        // Obtener detalles del pedido desde DetallePedido
+        const detallesPedido = await DetallePedido.findAll({ where: { pedidoId } });
+        const detalles = detallesPedido.map(d => ({
+            videojuegoId: d.videojuegoId,
+            cantidad: d.cantidad,
+            subtotal: d.subtotal
+        }));
         // Crear factura
         const factura = await Factura.create({
             numero,

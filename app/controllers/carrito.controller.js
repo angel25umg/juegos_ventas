@@ -1,6 +1,7 @@
 const db = require("../models");
 const Carrito = db.carritos;
 const CarritoDetalle = db.carritoDetalles;
+const Videojuego = db.videojuegos;
 
 // Crear carrito para cliente
 exports.create = async (req, res) => {
@@ -33,20 +34,31 @@ exports.getByCliente = async (req, res) => {
 // Agregar producto al carrito
 exports.addProducto = async (req, res) => {
     try {
-        const { carritoId, videojuegoId, cantidad, subtotal } = req.body;
-        if (!carritoId || !videojuegoId || !cantidad || !subtotal) {
-            return res.status(400).send({ message: "Todos los campos son requeridos." });
+        const { carritoId, videojuegoId, cantidad } = req.body;
+        if (!carritoId || !videojuegoId || !cantidad) {
+            return res.status(400).send({ message: "carritoId, videojuegoId y cantidad son requeridos." });
         }
-        // Si ya existe el producto en el carrito, actualiza cantidad y subtotal
+
+        // Obtener precio actual del videojuego y calcular subtotal server-side
+        const juego = await Videojuego.findByPk(videojuegoId);
+        if (!juego) return res.status(400).send({ message: `Videojuego ${videojuegoId} no encontrado.` });
+        const price = parseFloat(juego.precio) || 0;
+        const qty = parseInt(cantidad, 10) || 0;
+        const computedSubtotal = parseFloat((price * qty).toFixed(2));
+
+        // Si ya existe el producto en el carrito, actualiza cantidad y subtotal recalculando
         let detalle = await CarritoDetalle.findOne({ where: { carritoId, videojuegoId } });
         if (detalle) {
-            detalle.cantidad += cantidad;
-            detalle.subtotal += subtotal;
+            const newCantidad = parseInt(detalle.cantidad, 10) + qty;
+            const newSubtotal = parseFloat((price * newCantidad).toFixed(2));
+            detalle.cantidad = newCantidad;
+            detalle.subtotal = newSubtotal;
             await detalle.save();
             return res.send(detalle);
         }
-        // Si no existe, crea nuevo detalle
-        detalle = await CarritoDetalle.create({ carritoId, videojuegoId, cantidad, subtotal });
+
+        // Si no existe, crea nuevo detalle usando subtotal calculado
+        detalle = await CarritoDetalle.create({ carritoId, videojuegoId, cantidad: qty, subtotal: computedSubtotal });
         res.send(detalle);
     } catch (err) {
         res.status(500).send({ message: err.message });

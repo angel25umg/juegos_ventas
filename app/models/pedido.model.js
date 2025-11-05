@@ -6,7 +6,8 @@ module.exports = (sequelize, Sequelize) => {
         direccion_envio: { type: Sequelize.STRING },
         tipo_entrega: { type: Sequelize.ENUM("DIGITAL", "FISICA") },
         estado: { 
-            type: Sequelize.ENUM("PENDIENTE", "ENVIANDO", "ENTREGADO"),
+            // Added 'PAGADO' to represent pedidos que ya fueron pagados
+            type: Sequelize.ENUM("PENDIENTE", "ENVIANDO", "ENTREGADO", "PAGADO"),
             defaultValue: "PENDIENTE"
         }
     });

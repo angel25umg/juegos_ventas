@@ -71,4 +71,9 @@ db.carritoDetalles.belongsTo(db.carritos, { foreignKey: "carritoId" });
 db.videojuegos.hasMany(db.carritoDetalles, { foreignKey: "videojuegoId" });
 db.carritoDetalles.belongsTo(db.videojuegos, { foreignKey: "videojuegoId" });
 
+// Ensure Postgres enum for carrito.estado includes CONVERTIDO (safe on startup)
+// NOTE: enum label migration for Postgres is handled via migrations in
+// migrations/*.js. The runtime ALTER blocks were removed so schema changes
+// are explicit and tracked by migrations.
+
 module.exports = db;
