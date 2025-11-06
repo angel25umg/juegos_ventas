@@ -3,6 +3,7 @@ const Factura = db.facturas;
 const Pedido = db.pedidos;
 const Cliente = db.clientes;
 const DetallePedido = db.detallePedidos;
+const Videojuego = db.videojuegos;
 
 // Crear factura automáticamente tras pago
 exports.createFromPago = async (req, res) => {
@@ -19,10 +20,15 @@ exports.createFromPago = async (req, res) => {
         const numero = `F-${Date.now()}-${pedidoId}`;
         // Obtener detalles del pedido desde DetallePedido
         const detallesPedido = await DetallePedido.findAll({ where: { pedidoId } });
-        const detalles = detallesPedido.map(d => ({
-            videojuegoId: d.videojuegoId,
-            cantidad: d.cantidad,
-            subtotal: d.subtotal
+        // Obtener títulos de videojuegos para cada detalle y enriquecer detalles
+        const detalles = await Promise.all(detallesPedido.map(async (d) => {
+            const juego = await Videojuego.findByPk(d.videojuegoId);
+            return {
+                videojuegoId: d.videojuegoId,
+                titulo: juego ? juego.titulo : null,
+                cantidad: d.cantidad,
+                subtotal: d.subtotal
+            };
         }));
         // Crear factura
         const factura = await Factura.create({

@@ -1,6 +1,7 @@
 const db = require("../models");
 const Pedido = db.pedidos;
 const DetallePedido = db.detallePedidos;
+const Videojuego = db.videojuegos;
 
 // Crear pedido con detalles
 exports.create = (req, res) => {
@@ -33,12 +34,14 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const clienteId = req.query.clienteId;
     const where = clienteId ? { clienteId } : {};
-    Pedido.findAll({ where, include: [DetallePedido], order: [['fecha', 'DESC']] })
+    // Include detalles and nested videojuego so frontend can show titles
+    Pedido.findAll({ where, include: [{ model: DetallePedido, include: [Videojuego] }], order: [['fecha', 'DESC']] })
         .then(data => res.send(data))
         .catch(err => res.status(500).send({ message: err.message }));
 };
 exports.findOne = (req, res) => {
-    Pedido.findByPk(req.params.id, { include: [DetallePedido] }).then(data => data ? res.send(data) : res.status(404).send({ message: "Pedido no encontrado." }));
+    Pedido.findByPk(req.params.id, { include: [{ model: DetallePedido, include: [Videojuego] }] })
+        .then(data => data ? res.send(data) : res.status(404).send({ message: "Pedido no encontrado." }));
 };
 exports.update = (req, res) => {
     Pedido.update(req.body, { where: { id: req.params.id } })
