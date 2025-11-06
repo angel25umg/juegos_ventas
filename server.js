@@ -8,7 +8,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:8081"],
+  origin: ["https://game-plus-2njy9r0oj-angel-munizs-projects.vercel.app", "http://localhost:8081"],
 };
 
 app.use(cors(corsOptions));
