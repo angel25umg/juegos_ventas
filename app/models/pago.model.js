@@ -2,7 +2,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Pago = sequelize.define("pago", {
         pedidoId: { type: Sequelize.INTEGER }, // FK pedido
-        metodo: { type: Sequelize.ENUM("STRIPE", "PAYPAL") },
+        metodo: { type: Sequelize.ENUM("STRIPE", "OTRO") },
         monto: { type: Sequelize.FLOAT },
         factura_digital: { type: Sequelize.STRING } // ID o ruta factura
     });

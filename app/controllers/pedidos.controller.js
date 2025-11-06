@@ -31,7 +31,11 @@ exports.create = (req, res) => {
 
 // CRUD pedidos
 exports.findAll = (req, res) => {
-    Pedido.findAll({ include: [DetallePedido] }).then(data => res.send(data)).catch(err => res.status(500).send({ message: err.message }));
+    const clienteId = req.query.clienteId;
+    const where = clienteId ? { clienteId } : {};
+    Pedido.findAll({ where, include: [DetallePedido], order: [['fecha', 'DESC']] })
+        .then(data => res.send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 exports.findOne = (req, res) => {
     Pedido.findByPk(req.params.id, { include: [DetallePedido] }).then(data => data ? res.send(data) : res.status(404).send({ message: "Pedido no encontrado." }));

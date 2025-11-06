@@ -10,7 +10,7 @@ exports.ventasMensuales = async (req, res) => {
         const { year } = req.query;
         const selectedYear = year ? parseInt(year) : new Date().getFullYear();
         // Agrupa por mes y tipo_entrega usando raw query para evitar problemas de alias
-        const [results] = await db.sequelize.query(`
+    const results = await db.sequelize.query(`
             SELECT 
                 TO_CHAR(fecha, 'YYYY-MM') AS mes,
                 tipo_entrega,
@@ -23,7 +23,7 @@ exports.ventasMensuales = async (req, res) => {
             replacements: { year: selectedYear },
             type: Sequelize.QueryTypes.SELECT
         });
-        res.send(results);
+    res.send(results);
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
@@ -33,7 +33,7 @@ exports.ventasMensuales = async (req, res) => {
 exports.topClientes = async (req, res) => {
     try {
         // Consulta raw: suma total de pagos por cliente
-        const [results] = await db.sequelize.query(`
+    const results = await db.sequelize.query(`
             SELECT c.id AS clienteId, c.nombre, c.apellido, c.correo, SUM(p.monto) AS total_compras
             FROM pagos p
             JOIN pedidos pd ON p."pedidoId" = pd.id
@@ -44,7 +44,7 @@ exports.topClientes = async (req, res) => {
         `, {
             type: Sequelize.QueryTypes.SELECT
         });
-        res.send(results);
+    res.send(results);
     } catch (err) {
         res.status(500).send({ message: err.message });
     }

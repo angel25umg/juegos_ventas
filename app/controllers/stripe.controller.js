@@ -1,4 +1,4 @@
-const { secretKey } = require("../config/stripe.config");
+const { secretKey, publicKey } = require("../config/stripe.config");
 const Stripe = require("stripe");
 const stripe = Stripe(secretKey);
 
@@ -19,5 +19,15 @@ exports.createPaymentIntent = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+// Devuelve la clave pública para que el frontend la obtenga en tiempo de ejecución
+exports.getPublicKey = async (req, res) => {
+  try {
+    res.json({ publicKey });
+  } catch (error) {
+    console.error('Error returning stripe public key', error);
+    res.status(500).json({ error: 'Could not get public key' });
   }
 };

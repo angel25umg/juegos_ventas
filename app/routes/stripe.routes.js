@@ -7,8 +7,10 @@ module.exports = (app) => {
  
 
   // Endpoint para crear el pago
-
   router.post("/create-payment-intent", stripe.createPaymentIntent);
+
+  // Endpoint para obtener la clave pública en tiempo de ejecución
+  router.get("/public-key", stripe.getPublicKey);
 
  
 
