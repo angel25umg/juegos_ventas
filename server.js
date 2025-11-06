@@ -30,7 +30,7 @@ db.sequelize.sync({ force: false }).then(() => {
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "UMG Web Application" });
+  res.json({ message: "UMG wiwi Application" });
 });
 
 // Importamos todas las rutas
