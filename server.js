@@ -8,7 +8,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: ["https://game-plus-2njy9r0oj-angel-munizs-projects.vercel.app", "http://localhost:8081","https://game-plus-gray.vercel.app"],
+  origin: ["https://game-plus-2njy9r0oj-angel-munizs-projects.vercel.app", "http://localhost:8081","https://game-plus-gray.vercel.app","https://gameplus-front.onrender.com"],
 };
 
 app.use(cors(corsOptions));
@@ -30,7 +30,7 @@ db.sequelize.sync({ force: false }).then(() => {
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "UMG wiwi Application" });
+  res.json({ message: "UMG wiwo Application" });
 });
 
 // Importamos todas las rutas
